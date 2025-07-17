@@ -2,84 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>Touch Word Finder</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
       background: #f4f4f4;
       font-family: "Times New Roman", serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
+      height: 100%;
       box-sizing: border-box;
     }
 
     body {
-      padding: 2vh 2vw;
+      padding: 2vh 0;
     }
 
     .hidden { display: none; }
 
     .word-box {
-      font-size: 1.5em;
+      font-size: 1.4em;
       margin: 1vh;
       text-align: center;
     }
 
     .countdown {
-      font-size: 1.4em;
+      font-size: 1.2em;
       margin: 2vh;
       text-align: center;
     }
 
     .resting {
-      font-size: 1.5em;
+      font-size: 1.3em;
       text-align: center;
-      margin-top: 8vh;
+      margin-top: 6vh;
     }
 
     #line-grid {
       display: grid;
-      grid-template-columns: repeat(50, max-content); /* ✅ 控制字距 */
-      column-gap: 0.3vw;                              /* ✅ 字與字之間距離 */
-      row-gap: 0.6vh;
-      justify-content: center;
+      grid-template-columns: repeat(50, 1fr);
+      row-gap: 0.4vh;
+      column-gap: 0.2vw;
+      width: 100%;
+      max-width: 1000px; /* ✅ 固定寬度不炸版 */
+      margin: 0 auto 2vh auto;
       user-select: none;
-      margin-bottom: 1.5vh;
     }
 
     .word-span {
       font-family: "Times New Roman", serif;
-      font-size: clamp(18px, 2.8vw, 32px);
+      font-size: clamp(18px, 2.2vw, 26px); /* ✅ 最穩定比例 */
       text-align: center;
       cursor: pointer;
       padding: 0.3vh 0;
-      border-radius: 3px;
+      border-radius: 4px;
     }
 
     .word-span:hover { background-color: #dfe6e9; }
     .correct { background-color: #55efc4; }
     .wrong { background-color: #fab1a0; }
 
-    /* ✅ 時間條樣式 */
     .timer-bar-container {
       width: 100%;
+      max-width: 1000px;
       height: 12px;
       background: #ddd;
       border-radius: 6px;
       overflow: hidden;
-      margin-top: 1vh;
+      margin-bottom: 2vh;
     }
 
     .timer-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, #74b9ff, #0984e3);
       width: 100%;
+      background: linear-gradient(90deg, #74b9ff, #0984e3);
       transition: width 1s linear;
     }
   </style>
