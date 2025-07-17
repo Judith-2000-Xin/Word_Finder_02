@@ -10,17 +10,17 @@
       padding: 0;
       height: 100%;
       width: 100%;
-      box-sizing: border-box;
       background: #f4f4f4;
       font-family: "Times New Roman", serif;
-    }
-
-    body {
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-sizing: border-box;
+    }
+
+    body {
       padding: 2vh 3vw;
-      font-size: calc(12px + 0.5vw + 0.5vh);
+      font-size: clamp(12px, 1.2vw, 20px);
     }
 
     .hidden { display: none; }
@@ -33,21 +33,19 @@
 
     .line {
       margin: 0.4vh 0;
-      display: flex;
-      justify-content: center;
-      gap: 0.3vw;
-      flex-wrap: nowrap;
-      overflow-x: auto;
       font-family: monospace;
-      font-size: 1.8vw;
+      font-size: clamp(14px, 1.8vw, 28px);
+      width: 50ch;                  /* ✅ 剛好容納 50 字元 */
+      white-space: nowrap;          /* ✅ 不換行 */
+      overflow: hidden;             /* ✅ 不捲動 */
+      text-align: center;
     }
 
     .word-span {
       display: inline-block;
-      width: 1.6em;
+      width: 1ch;                   /* ✅ 每字剛好寬度 */
       text-align: center;
       cursor: pointer;
-      padding: 0.2em 0.3em;
       border-radius: 4px;
     }
 
@@ -90,7 +88,7 @@
     const TOTAL_PAGES = 20;
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
-    const WORD_POOL = ["COLOR", "ORANGE" , "YELLOW" , "GREEN" , "PURPLE" ,  "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
