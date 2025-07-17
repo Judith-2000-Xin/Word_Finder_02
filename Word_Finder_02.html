@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>Touch Word Finder</title>
   <style>
     html, body {
@@ -10,43 +10,43 @@
       padding: 0;
       height: 100%;
       width: 100%;
+      box-sizing: border-box;
       background: #f4f4f4;
-      font-family: "Times New Roman", serif;
+      font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-sizing: border-box;
+      justify-content: start;
     }
 
     body {
-      padding: 2vh 3vw;
-      font-size: clamp(12px, 1.2vw, 20px);
+      padding: 2vh 0;
+      font-size: 1.9vw; /* 🎯 關鍵！每字剛好一格，50 字寬剛好滿螢幕 */
     }
 
     .hidden { display: none; }
 
     .word-box {
-      font-size: 1.5em;
+      font-size: 1.2em;
       margin: 1vh;
       text-align: center;
     }
 
     .line {
-      margin: 0.4vh 0;
-      font-family: monospace;
-      font-size: clamp(14px, 1.8vw, 28px);
-      width: 50ch;                  /* ✅ 剛好容納 50 字元 */
-      white-space: nowrap;          /* ✅ 不換行 */
-      overflow: hidden;             /* ✅ 不捲動 */
+      width: 100vw;
+      white-space: nowrap;
+      overflow: hidden;
       text-align: center;
+      margin: 0.3vh 0;
     }
 
     .word-span {
       display: inline-block;
-      width: 1ch;                   /* ✅ 每字剛好寬度 */
+      width: 1ch;
       text-align: center;
       cursor: pointer;
       border-radius: 4px;
+      padding: 0;
     }
 
     .word-span:hover { background-color: #dfe6e9; }
@@ -54,15 +54,15 @@
     .wrong { background-color: #fab1a0; }
 
     .countdown {
-      font-size: 1.6em;
+      font-size: 1.5em;
       margin: 2vh;
       text-align: center;
     }
 
     .resting {
-      font-size: 1.8em;
+      font-size: 1.5em;
       text-align: center;
-      margin-top: 10vh;
+      margin-top: 8vh;
     }
   </style>
 </head>
