@@ -15,6 +15,7 @@
       align-items: center;
       height: 100%;
       box-sizing: border-box;
+      overflow-x: hidden; /* ✅ 防止左右捲動 */
     }
 
     body {
@@ -43,21 +44,25 @@
 
     #line-grid {
       display: grid;
-      grid-template-columns: repeat(50, 1fr);
-      row-gap: 0.4vh;
-      column-gap: 0.2vw;
-      width: 100%;
-      max-width: 1000px; /* ✅ 固定寬度不炸版 */
+      grid-template-columns: repeat(50, minmax(0, 1fr));  /* ✅ 保持 50 格、避免爆寬 */
+      row-gap: 0.5vh;
+      column-gap: 0.15vw;
+      width: 95vw;
+      max-width: 1000px;
       margin: 0 auto 2vh auto;
       user-select: none;
+      box-sizing: border-box;
     }
 
     .word-span {
       font-family: "Times New Roman", serif;
-      font-size: clamp(18px, 2.2vw, 26px); /* ✅ 最穩定比例 */
+      font-size: clamp(16px, 2.2vw, 26px);  /* ✅ 隨顯示器變動 */
       text-align: center;
       cursor: pointer;
       padding: 0.3vh 0;
+      width: 1ch;                          /* ✅ 每字剛好寬 */
+      display: inline-block;
+      letter-spacing: 0.05ch;              /* ✅ 避免黏字 */
       border-radius: 4px;
     }
 
