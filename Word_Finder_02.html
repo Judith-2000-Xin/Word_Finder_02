@@ -25,18 +25,17 @@
     .word-box {
       font-size: 1.4em;
       text-align: center;
-      margin: 2vh;
-      font-weight: bold;
+      margin: 1vh;
     }
 
     .countdown {
-      font-size: 0.8em;
+      font-size: 1.2em;
       text-align: center;
       margin-bottom: 2vh;
     }
 
     .resting {
-      font-size: 1.6em;
+      font-size: 1.3em;
       text-align: center;
       margin-top: 8vh;
     }
@@ -46,7 +45,7 @@
       grid-template-columns: repeat(50, 1fr);
       width: 100%;
       max-width: 100vw;
-      row-gap: 0.8vh;
+      row-gap: 0.4vh;
       column-gap: 0;
       justify-content: center;
       padding: 0 1vw;
@@ -84,6 +83,13 @@
       width: 100%;
       transition: width 1s linear;
     }
+
+    #topTargetBox {
+      font-size: 1.6em;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1vh;
+    }
   </style>
 </head>
 <body>
@@ -97,8 +103,8 @@
     <div class="resting">Take a 30-second break...<br>Next page starting in <span id="restCount">30</span> seconds</div>
   </div>
 
-  <!-- ✅ 將目標單字顯示放在頁面最上方且置中 -->
-  <div id="topTargetBox" class="word-box hidden"></div>
+  <!-- ✅ 顯示遊戲中目標單字（只有遊戲中才顯示） -->
+  <div id="topTargetBox" class="hidden"></div>
 
   <div id="game" class="hidden">
     <div id="line-grid"></div>
@@ -117,7 +123,7 @@
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["COLOR", "ORANGE", "YELLOW", "GREEN", "PURPLE", "SWAG", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
@@ -167,7 +173,6 @@
 
     function generatePage(words) {
       gridEl.innerHTML = "";
-
       topTargetBox.textContent = "🔍 Find: " + words.join(", ");
       topTargetBox.classList.remove("hidden");
 
@@ -277,6 +282,7 @@
     }
 
     function nextPage() {
+      topTargetBox.classList.add("hidden"); // 隱藏上方提示直到開始
       promptEl.classList.remove("hidden");
       gameEl.classList.add("hidden");
       foundWords = new Set();
