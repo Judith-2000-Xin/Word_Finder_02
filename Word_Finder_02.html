@@ -8,12 +8,14 @@
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;                     /* ✅ 禁止全域橫捲動 */
       background: #f4f4f4;
       font-family: "Times New Roman", serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      height: 100%;
       box-sizing: border-box;
     }
 
@@ -47,18 +49,23 @@
       row-gap: 0.4vh;
       column-gap: 0.2vw;
       width: 100%;
-      max-width: 1000px; /* ✅ 固定寬度不炸版 */
+      max-width: 1000px;                      /* ✅ 限制最大寬度避免撐爆 */
       margin: 0 auto 2vh auto;
       user-select: none;
+      overflow: hidden;
     }
 
     .word-span {
       font-family: "Times New Roman", serif;
-      font-size: clamp(16px, 2vw, 24px); /* ✅ 最穩定比例 */
+      font-size: clamp(16px, 2vw, 24px);      /* ✅ 控制字體大小不撐寬 */
       text-align: center;
       cursor: pointer;
-      padding: 0.3vh 0;
+      padding: 0.2vh 0;
       border-radius: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .word-span:hover { background-color: #dfe6e9; }
@@ -111,7 +118,7 @@
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["COLOR", "ORANGE" , "YELLOW" , "GREEN" , "PURPLE" , "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
