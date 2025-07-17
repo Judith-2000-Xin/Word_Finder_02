@@ -2,56 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Touch Word Finder</title>
   <style>
     html, body {
-      width: 100vw;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
-      box-sizing: border-box;
+      justify-content: flex-start;
+      background: #f4f4f4;
     }
 
     body {
       font-family: "Times New Roman", serif;
-      font-size: calc(20px + 0.5vw);
-      line-height: 2;
+      font-size: calc(12px + 0.8vw + 0.5vh);
+      line-height: 1.6;
       text-align: justify;
-      padding: 20px;
-      max-width: 90vw;
-      background: #f4f4f4;
+      max-width: 100%;
+      padding: 2vw;
+      overflow-x: hidden;
     }
 
     .hidden { display: none; }
-    .word-box { font-size: 20px; margin: 10px; text-align: center; }
+    .word-box {
+      font-size: calc(16px + 0.5vw);
+      margin: 1vh;
+      text-align: center;
+    }
+
     .line {
-      margin: 5px 0;
+      margin: 0.5vh 0;
       font-family: monospace;
       text-align: justify;
-      white-space: pre;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
+
     .word-span {
       display: inline-block;
       cursor: pointer;
-      padding: 2px 4px;
+      padding: 0.2em 0.4em;
       border-radius: 4px;
     }
+
     .word-span:hover { background-color: #dfe6e9; }
     .correct { background-color: #55efc4; }
     .wrong { background-color: #fab1a0; }
+
     .countdown {
-      font-size: 24px;
-      margin: 20px;
+      font-size: calc(20px + 0.5vw);
+      margin: 2vh;
       text-align: center;
     }
+
     .resting {
-      font-size: 28px;
+      font-size: calc(22px + 0.5vw);
       text-align: center;
-      margin-top: 100px;
+      margin-top: 8vh;
     }
   </style>
 </head>
@@ -76,7 +88,7 @@
     const TOTAL_PAGES = 20;
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
-    const WORD_POOL = ["COLOR", "ORANGE" , "PURPLE" , "GREEN" , "YELLOW" , "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "ORANGE" , "YELLOW" , "GREEN" , "PURPLE" , "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
