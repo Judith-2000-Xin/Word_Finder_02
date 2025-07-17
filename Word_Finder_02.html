@@ -59,8 +59,8 @@
       text-align: center;
       display: inline-block;
       cursor: pointer;
-      line-height: 1.8;             /* ✅ 增加行距 */
-      letter-spacing: 1px;          /* ✅ 增加字母間距 */
+      line-height: 1.8;           /* ✅ 行距加大 */
+      letter-spacing: 1px;        /* ✅ 字距加寬 */
     }
 
     .word-span:hover { background-color: #dfe6e9; }
@@ -97,6 +97,7 @@
   </div>
 
   <div id="game" class="hidden">
+    <div id="topTargetBox" class="word-box"></div> <!-- ✅ 新增：上方顯示目標單字 -->
     <div id="line-grid"></div>
     <div class="timer-bar-container">
       <div id="timerBar" class="timer-bar-fill"></div>
@@ -163,11 +164,8 @@
     function generatePage(words) {
       gridEl.innerHTML = "";
 
-      // ✅ 顯示該頁目標單字於上方
-      const topTargetBox = document.createElement("div");
-      topTargetBox.className = "word-box";
-      topTargetBox.textContent = "🔍 Find: " + words.join(", ");
-      gridEl.appendChild(topTargetBox);
+      // ✅ 顯示本頁目標單字於上方
+      document.getElementById("topTargetBox").textContent = "🔍 Find: " + words.join(", ");
 
       const lines = [];
       for (let i = 0; i < LINES_PER_PAGE; i++) {
@@ -200,7 +198,7 @@
         });
       });
 
-      // ❌（註解原本底下顯示目標單字）
+      // ❌（保留原本底部提示但註解掉）
       // const targetBox = document.createElement("div");
       // targetBox.className = "word-box";
       // targetBox.textContent = "🔍 Find: " + words.join(", ");
