@@ -35,7 +35,7 @@
     #gridContainer {
       display: flex;
       flex-direction: column;
-      gap: 0.6vh;
+      gap: 0.5vh;
       max-width: 100%;
     }
 
@@ -44,18 +44,20 @@
       justify-content: center;
       white-space: nowrap;
       overflow: hidden;
-      /* 🔧 字元間距調整為更寬鬆且一致 */
-      letter-spacing: 0.25ch;
+      letter-spacing: 0.15ch;
     }
 
     .word-span {
       display: inline-block;
-      width: 2ch; /* 🔧 更寬，避免 Times New Roman 字擠在一起 */
+      width: 1ch;
       text-align: center;
       font-size: clamp(16px, 2vw, 28px);
       line-height: 1.3;
       user-select: none;
       cursor: pointer;
+      /* ✅ 新增字距與間隔 */
+      letter-spacing: 0.25ch;
+      margin: 0 0.05ch;
     }
 
     .word-span:hover {
@@ -82,24 +84,19 @@
       background: linear-gradient(90deg, #74b9ff, #0984e3);
       transition: width 1s linear;
     }
-
-    /* ✅ 新增：目標單字顯示區 */
-    .target-list {
-      margin-top: 2vh;
-      font-size: 1em;
-      font-style: italic;
-      color: #444;
-    }
   </style>
 </head>
 <body>
-  <h2 style="text-align: center">Find These Words</h2>
+  <h2 style="text-align: center">Find these words:</h2>
   <div id="targetWords" class="word-box">COLOR, TREE, MOON</div>
   <div class="countdown">Time left: <span id="countdown">60</span> seconds</div>
 
   <div id="gridContainer"></div>
 
-  <div class="target-list">🔍 目標單字：COLOR, TREE, MOON</div>
+  <!-- ✅ 新增每篇目標單字提示區 -->
+  <div class="word-box" style="font-size: 1em; font-style: italic; margin-top: 2vh; color: #444;">
+    🔍 本頁目標單字：<span id="wordListCopy"></span>
+  </div>
 
   <div class="timer-bar-container">
     <div id="timerBar" class="timer-bar-fill"></div>
@@ -132,6 +129,9 @@
       for (let i = 0; i < LINES; i++) {
         gridEl.appendChild(generateLine());
       }
+
+      // ✅ 將上方單字複製到底部提示區
+      document.getElementById("wordListCopy").textContent = targetWordsEl.textContent;
     }
 
     function startTimer(duration) {
