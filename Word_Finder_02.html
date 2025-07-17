@@ -2,76 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Touch Word Finder – No Scroll + Monospace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Touch Word Finder</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden; /* ✅ 不可左右捲動 */
+      width: 100%;
+      height: 100%;
       background: #f4f4f4;
       font-family: monospace;
-    }
-
-    body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      justify-content: start;
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 2vh 2vw;
     }
 
     .hidden { display: none; }
 
     .word-box {
-      font-size: 1.4em;
-      margin: 10px 0;
+      font-size: 1.2em;
+      margin: 1vh;
       text-align: center;
     }
 
     .countdown {
-      font-size: 1.2em;
-      margin-bottom: 20px;
+      font-size: 1.5em;
+      margin: 2vh;
       text-align: center;
     }
 
     .resting {
       font-size: 1.5em;
       text-align: center;
-      margin-top: 100px;
+      margin-top: 8vh;
     }
 
-    #game {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4vh;
-      width: 100%;
+    #line-grid {
+      display: grid;
+      grid-template-columns: repeat(50, 1fr);  /* ✅ 50 格 */
+      grid-auto-rows: auto;
+      width: 100vw;
       max-width: 100vw;
-      box-sizing: border-box;
-    }
-
-    .line {
-      display: flex;
-      justify-content: center;
-      flex-wrap: nowrap;
       overflow: hidden;
-      white-space: nowrap;
-      width: 100%;
-    }
-
-    .word-span {
-      display: inline-block;
-      width: 1ch;                               /* ✅ 每字固定寬度 */
-      font-size: clamp(16px, 2vw, 28px);        /* ✅ 自適應大小 */
-      text-align: center;
-      line-height: 1.3;
-      cursor: pointer;
       user-select: none;
     }
 
-    .word-span:hover { background-color: #dfe6e9; }
-    .correct { background-color: #55efc4; }
-    .wrong   { background-color: #fab1a0; }
+    .word-span {
+      text-align: center;
+      font-size: clamp(14px, 2vw, 28px);
+      cursor: pointer;
+      padding: 0.2vh 0;
+      border-radius: 3px;
+    }
+
+    .word-span:hover {
+      background-color: #dfe6e9;
+    }
+
+    .correct {
+      background-color: #55efc4;
+    }
+
+    .wrong {
+      background-color: #fab1a0;
+    }
   </style>
 </head>
 <body>
@@ -85,7 +85,9 @@
     <div class="resting">Take a 30-second break...<br>Next page starting in <span id="restCount">30</span> seconds</div>
   </div>
 
-  <div id="game" class="hidden"></div>
+  <div id="game" class="hidden">
+    <div id="line-grid"></div>
+  </div>
 
   <div id="result" class="hidden">
     <h2 style="text-align: center">✅ Game Completed</h2>
@@ -108,6 +110,7 @@
     const countEl = document.getElementById("count");
     const targetWordsEl = document.getElementById("targetWords");
     const gameEl = document.getElementById("game");
+    const gridEl = document.getElementById("line-grid");
     const resultEl = document.getElementById("result");
     const summaryEl = document.getElementById("summary");
     const restEl = document.getElementById("rest");
@@ -141,8 +144,9 @@
     }
 
     function generatePage(words) {
-      gameEl.innerHTML = "";
+      gridEl.innerHTML = "";
       const lines = [];
+
       for (let i = 0; i < LINES_PER_PAGE; i++) {
         const line = [];
         for (let j = 0; j < LINE_LENGTH; j++) {
@@ -167,13 +171,10 @@
       });
 
       lines.forEach(line => {
-        const div = document.createElement("div");
-        div.className = "line";
         line.forEach(span => {
           span.onclick = () => handleClick(span);
-          div.appendChild(span);
+          gridEl.appendChild(span);
         });
-        gameEl.appendChild(div);
       });
 
       clearTimeout(pageTimeout);
