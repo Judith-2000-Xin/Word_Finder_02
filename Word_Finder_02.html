@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Word Finder (No Scroll)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Finder Responsive</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
+      height: 100%;
       font-family: "Times New Roman", serif;
       background-color: #f4f4f4;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -30,23 +30,22 @@
 
     #line-grid {
       display: grid;
-      grid-template-columns: repeat(50, max-content);
-      row-gap: 0.4vh;
-      column-gap: 0.2vw;
-      justify-content: center;
-      margin-bottom: 2vh;
-      max-width: 100%;
-      overflow: hidden;
+      grid-template-columns: repeat(50, 1fr);
+      gap: 0.4vh 0.2vw;
+      width: 100%;
+      max-width: 100vw;
+      padding: 0 2vw;
+      box-sizing: border-box;
     }
 
     .word-span {
-      font-size: clamp(16px, 2vw, 22px);
+      font-size: calc(0.9vw + 0.6vh); /* ✅ 自適應字體大小 */
+      width: 1ch;
       text-align: center;
       cursor: pointer;
       padding: 0.2vh 0;
       border-radius: 4px;
       user-select: none;
-      width: 1ch;
       display: inline-block;
     }
 
@@ -55,12 +54,13 @@
     .wrong { background-color: #fab1a0; }
 
     .timer-bar-container {
-      width: 100vw;
+      width: 100%;
       max-width: 1000px;
       height: 12px;
       background: #ddd;
       border-radius: 6px;
       overflow: hidden;
+      margin-top: 1vh;
     }
 
     .timer-bar-fill {
@@ -99,7 +99,7 @@
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["COLOR", "ORANGE" , "YELLOW" , "GREEN" , "PURPLE" , "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
