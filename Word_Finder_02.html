@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <title>Touch Word Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Word Finder (No Scroll)</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       max-width: 100%;
-      overflow-x: hidden;                     /* ✅ 禁止全域橫捲動 */
-      background: #f4f4f4;
+      overflow-x: hidden;
       font-family: "Times New Roman", serif;
+      background-color: #f4f4f4;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -24,48 +24,30 @@
     }
 
     .hidden { display: none; }
-
-    .word-box {
-      font-size: 1.4em;
-      margin: 1vh;
-      text-align: center;
-    }
-
-    .countdown {
-      font-size: 1.2em;
-      margin: 2vh;
-      text-align: center;
-    }
-
-    .resting {
-      font-size: 1.3em;
-      text-align: center;
-      margin-top: 6vh;
-    }
+    .word-box { font-size: 1.4em; margin: 1vh; text-align: center; }
+    .countdown { font-size: 1.2em; margin: 2vh; text-align: center; }
+    .resting { font-size: 1.3em; text-align: center; margin-top: 6vh; }
 
     #line-grid {
       display: grid;
-      grid-template-columns: repeat(50, 1fr);
+      grid-template-columns: repeat(50, max-content);
       row-gap: 0.4vh;
       column-gap: 0.2vw;
-      width: 100%;
-      max-width: 1000px;                      /* ✅ 限制最大寬度避免撐爆 */
-      margin: 0 auto 2vh auto;
-      user-select: none;
+      justify-content: center;
+      margin-bottom: 2vh;
+      max-width: 100%;
       overflow: hidden;
     }
 
     .word-span {
-      font-family: "Times New Roman", serif;
-      font-size: clamp(16px, 2vw, 24px);      /* ✅ 控制字體大小不撐寬 */
+      font-size: clamp(16px, 2vw, 22px);
       text-align: center;
       cursor: pointer;
       padding: 0.2vh 0;
       border-radius: 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      box-sizing: border-box;
+      user-select: none;
+      width: 1ch;
+      display: inline-block;
     }
 
     .word-span:hover { background-color: #dfe6e9; }
@@ -73,13 +55,12 @@
     .wrong { background-color: #fab1a0; }
 
     .timer-bar-container {
-      width: 100%;
+      width: 100vw;
       max-width: 1000px;
       height: 12px;
       background: #ddd;
       border-radius: 6px;
       overflow: hidden;
-      margin-bottom: 2vh;
     }
 
     .timer-bar-fill {
@@ -118,7 +99,7 @@
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["COLOR", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "ORANGE" , "YELLOW" , "GREEN" , "PURPLE" , "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
 
     let currentPage = 0;
     let times = [];
