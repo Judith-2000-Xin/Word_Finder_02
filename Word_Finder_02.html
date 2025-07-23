@@ -95,6 +95,7 @@
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
     const WORD_POOL = ["DISPLAY", "SUNNY", "SMILE", "MAPLE", "HELLO", "COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "PURE", "WIN"];
+    const TOTAL_WORDS = 80;
 
     let currentPage = 0;
     let times = [];
@@ -237,7 +238,18 @@
       promptEl.classList.remove("hidden");
       gameEl.classList.add("hidden");
       foundWords = new Set();
-      targetWords = shuffle([...new Set(WORD_POOL)]).slice(0, Math.floor(Math.random() * 3) + 1);
+if (currentPage === 0) {
+  const allWords = shuffle([...WORD_POOL]).slice(0, TOTAL_WORDS);
+  window.pageWordSets = [];
+  let remaining = TOTAL_WORDS;
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    const wordsThisPage = i === TOTAL_PAGES - 1 ? remaining : Math.floor(TOTAL_WORDS / TOTAL_PAGES);
+    pageWordSets.push(allWords.splice(0, wordsThisPage));
+    remaining -= wordsThisPage;
+  }
+}
+
+targetWords = pageWordSets[currentPage];
       targetWordsEl.textContent = targetWords.join(", ");
       let count = 5;
       countEl.textContent = count;
