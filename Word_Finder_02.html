@@ -327,6 +327,18 @@
         <p>📊 <strong>Overall Accuracy:</strong> ${overallAccuracy}%</p>
       `;
       summaryEl.appendChild(statsDiv);
+
+      // ➕ 顯示 total words 與平均每頁單字數
+      const totalWordsDiv = document.createElement("div");
+      totalWordsDiv.style.marginTop = "10px";
+      totalWordsDiv.style.fontSize = "1.1em";
+
+      const averageWords = (totalTargets / correctCounts.length).toFixed(1);
+      totalWordsDiv.innerHTML = `
+        <p>📘 <strong>Total Words:</strong> ${totalTargets}</p>
+        <p>📄 <strong>Average Words per Page:</strong> ${averageWords}</p>
+      `;
+      summaryEl.appendChild(totalWordsDiv);
     }
 
     nextPage();
