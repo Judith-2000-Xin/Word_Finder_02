@@ -76,11 +76,10 @@
   </div>
 
   <div id="rest" class="hidden">
-    <div class="resting">Take a 30-second break...<br>Next page starting in <span id="restCount">30</span> seconds</div>
+    <div class="resting">Take a 15-second break...<br>Next page starting in <span id="restCount">15</span> seconds</div>
   </div>
 
   <div id="topTargetBox" class="hidden"></div>
-
   <div id="game" class="hidden">
     <div id="line-grid"></div>
   </div>
@@ -151,7 +150,7 @@
         const line = [];
         for (let j = 0; j < LINE_LENGTH; j++) {
           const span = document.createElement("span");
-          span.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789"[Math.floor(Math.random() * 37)];
+          span.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)];
           span.className = "word-span";
           line.push(span);
         }
@@ -264,38 +263,22 @@
         const [correct, total] = correctCounts[i].split("/").map(Number);
         const accuracy = ((correct / total) * 100).toFixed(1);
         const speed = (t / total).toFixed(1);
-        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 Search Time：${speed} Second/Words`;
+        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 ${speed} seconds/word`;
       }).join("<br>");
 
       const showTableBtn = document.createElement("button");
-      showTableBtn.textContent = " 📊 Show the table ";
-      showTableBtn.style.marginTop = "20px";
-      showTableBtn.style.padding = "10px 20px";
-      showTableBtn.style.fontSize = "1em";
-
+      showTableBtn.textContent = "📊 Show Table";
       showTableBtn.onclick = () => {
         if (document.getElementById("resultTable")) return;
         const table = document.createElement("table");
         table.id = "resultTable";
-        table.style.marginTop = "20px";
-        table.style.borderCollapse = "collapse";
-        table.style.width = "90%";
-        table.style.maxWidth = "900px";
-        table.style.textAlign = "center";
-        table.style.fontSize = "1.1em";
-        table.style.border = "1px solid #333";
-
         const headerRow = document.createElement("tr");
-        ["Page", "Search time(S)", "Find the number of words", "Total number of targets", "Accuracy(%)", "Search speed(seconds/word)"].forEach(text => {
+        ["Page", "Search time(S)", "Correct", "Total", "Accuracy(%)", "Speed(sec/word)"].forEach(text => {
           const th = document.createElement("th");
           th.textContent = text;
-          th.style.border = "1px solid #333";
-          th.style.padding = "8px";
-          th.style.background = "#dfe6e9";
           headerRow.appendChild(th);
         });
         table.appendChild(headerRow);
-
         times.forEach((t, i) => {
           const [correct, total] = correctCounts[i].split("/").map(Number);
           const accuracy = ((correct / total) * 100).toFixed(1);
@@ -304,42 +287,46 @@
           [i + 1, t, correct, total, accuracy, speed].forEach(val => {
             const td = document.createElement("td");
             td.textContent = val;
-            td.style.border = "1px solid #333";
-            td.style.padding = "6px";
             row.appendChild(td);
           });
           table.appendChild(row);
         });
-
         summaryEl.appendChild(table);
       };
+      summaryEl.appendChild(showTableBtn);
 
       const downloadBtn = document.createElement("button");
-      downloadBtn.textContent = "📥 Download Summary CSV";
-      downloadBtn.style.marginTop = "10px";
-      downloadBtn.style.padding = "10px 20px";
-      downloadBtn.style.fontSize = "1em";
-
+      downloadBtn.textContent = "📅 Download CSV";
       downloadBtn.onclick = () => {
-        let csvContent = "Page,Search time(S),Find the number of words,Total number of targets,Accuracy(%),Search speed(seconds/word)\n";
+        let csv = "Page,Time,Correct,Total,Accuracy,Speed\n";
         times.forEach((t, i) => {
           const [correct, total] = correctCounts[i].split("/").map(Number);
           const accuracy = ((correct / total) * 100).toFixed(1);
           const speed = (t / total).toFixed(1);
-          csvContent += `${i + 1},${t},${correct},${total},${accuracy},${speed}\n`;
+          csv += `${i + 1},${t},${correct},${total},${accuracy},${speed}\n`;
         });
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const blob = new Blob([csv], { type: "text/csv" });
         const link = document.createElement("a");
-        link.setAttribute("href", URL.createObjectURL(blob));
-        link.setAttribute("download", "summary.csv");
-        link.style.display = "none";
-        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = "summary.csv";
         link.click();
-        document.body.removeChild(link);
       };
-
-      summaryEl.appendChild(showTableBtn);
       summaryEl.appendChild(downloadBtn);
+
+      const totalCorrect = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[0]), 0);
+      const totalTargets = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[1]), 0);
+      const totalTime = times.reduce((sum, t) => sum + Number(t), 0);
+      const overallAccuracy = ((totalCorrect / totalTargets) * 100).toFixed(1);
+
+      const statsDiv = document.createElement("div");
+      statsDiv.style.marginTop = "20px";
+      statsDiv.style.fontSize = "1.2em";
+      statsDiv.innerHTML = `
+        <p>✅ <strong>Total Correct:</strong> ${totalCorrect}</p>
+        <p>⏱ <strong>Total Time Spent:</strong> ${totalTime.toFixed(2)} seconds</p>
+        <p>📊 <strong>Overall Accuracy:</strong> ${overallAccuracy}%</p>
+      `;
+      summaryEl.appendChild(statsDiv);
     }
 
     nextPage();
