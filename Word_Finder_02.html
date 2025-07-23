@@ -151,7 +151,7 @@
         const line = [];
         for (let j = 0; j < LINE_LENGTH; j++) {
           const span = document.createElement("span");
-          span.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)];
+          span.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789"[Math.floor(Math.random() * 37)];
           span.className = "word-span";
           line.push(span);
         }
@@ -184,7 +184,7 @@
         correctCounts.push(`${foundWords.size}/${targetWords.length}`);
         currentPage++;
         if (currentPage === TOTAL_PAGES) showResult();
-        else if (currentPage % 5 === 0) showRest();
+        else if (currentPage % 10 === 0) showRest();
         else nextPage();
       }, PAGE_DURATION * 1000);
     }
@@ -220,7 +220,7 @@
       gameEl.classList.add("hidden");
       restEl.classList.remove("hidden");
       topTargetBox.classList.add("hidden");
-      let restCount = 30;
+      let restCount = 15;
       restCountEl.textContent = restCount;
       const restTimer = setInterval(() => {
         restCount--;
@@ -264,11 +264,11 @@
         const [correct, total] = correctCounts[i].split("/").map(Number);
         const accuracy = ((correct / total) * 100).toFixed(1);
         const speed = (t / total).toFixed(1);
-        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 搜尋速度：${speed} 秒/字`;
+        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 Search Time：${speed} Second/Words`;
       }).join("<br>");
 
       const showTableBtn = document.createElement("button");
-      showTableBtn.textContent = "📊 顯示每頁搜尋時間與正確數（表格）";
+      showTableBtn.textContent = " 📊 Show the table ";
       showTableBtn.style.marginTop = "20px";
       showTableBtn.style.padding = "10px 20px";
       showTableBtn.style.fontSize = "1em";
