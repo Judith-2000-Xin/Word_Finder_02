@@ -125,6 +125,20 @@
       return arr;
     }
 
+    (function initWordSets() {
+      const allWords = shuffle([...WORD_POOL]).slice(0, TOTAL_WORDS);
+      pageWordSets = [];
+      let remaining = TOTAL_WORDS;
+      for (let i = 0; i < TOTAL_PAGES; i++) {
+        const pagesLeft = TOTAL_PAGES - i;
+        const maxWords = Math.min(4, remaining - (pagesLeft - 1));
+        const minWords = Math.max(1, remaining - (pagesLeft - 1) * 4);
+        const numWords = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
+        pageWordSets.push(allWords.splice(0, numWords));
+        remaining -= numWords;
+      }
+    })();
+
     function insertWordIntoLine(lineArr, word) {
       const maxPos = LINE_LENGTH - word.length;
       for (let i = 0; i < 50; i++) {
@@ -238,19 +252,6 @@
     }
 
     function nextPage() {
-      if (currentPage === 0) {
-        const allWords = shuffle([...WORD_POOL]).slice(0, TOTAL_WORDS);
-        pageWordSets = [];
-        let remaining = TOTAL_WORDS;
-        for (let i = 0; i < TOTAL_PAGES; i++) {
-          const pagesLeft = TOTAL_PAGES - i;
-          const maxWords = Math.min(4, remaining - (pagesLeft - 1));
-          const minWords = Math.max(1, remaining - (pagesLeft - 1) * 4);
-          const numWords = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
-          pageWordSets.push(allWords.splice(0, numWords));
-          remaining -= numWords;
-        }
-      }
       topTargetBox.classList.add("hidden");
       promptEl.classList.remove("hidden");
       gameEl.classList.add("hidden");
