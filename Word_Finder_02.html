@@ -12,35 +12,29 @@
       background: #f4f4f4;
       font-family: "Times New Roman", serif;
     }
-
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2vh 0;
     }
-
     .hidden { display: none; }
-
     .word-box {
       font-size: 1.4em;
       text-align: center;
       margin: 2vh;
       font-weight: bold;
     }
-
     .countdown {
-      font-size: 1em;
+      font-size: 0.8em;
       text-align: center;
       margin-bottom: 2vh;
     }
-
     .resting {
       font-size: 1.6em;
       text-align: center;
       margin-top: 8vh;
     }
-
     #line-grid {
       display: grid;
       grid-template-columns: repeat(50, 1fr);
@@ -53,7 +47,6 @@
       box-sizing: border-box;
       user-select: none;
     }
-
     .word-span {
       font-size: clamp(14px, 2vw, 28px);
       width: 100%;
@@ -63,28 +56,9 @@
       line-height: 1.8;
       letter-spacing: 1px;
     }
-
     .word-span:hover { background-color: #dfe6e9; }
     .correct { background-color: #55efc4; }
     .wrong { background-color: #fab1a0; }
-
-    .timer-bar-container {
-      width: 100%;
-      max-width: 1000px;
-      height: 12px;
-      background: #ddd;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 2vh;
-    }
-
-    .timer-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #74b9ff, #0984e3);
-      width: 100%;
-      transition: width 1s linear;
-    }
-
     #topTargetBox {
       font-size: 1.6em;
       font-weight: bold;
@@ -93,6 +67,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="prompt">
     <h2 style="text-align: center">Find these words:</h2>
@@ -104,14 +79,10 @@
     <div class="resting">Take a 30-second break...<br>Next page starting in <span id="restCount">30</span> seconds</div>
   </div>
 
-  <!-- ✅ 顯示遊戲中目標單字（只有遊戲中才顯示） -->
   <div id="topTargetBox" class="hidden"></div>
 
   <div id="game" class="hidden">
     <div id="line-grid"></div>
-    <div class="timer-bar-container">
-      <div id="timerBar" class="timer-bar-fill"></div>
-    </div>
   </div>
 
   <div id="result" class="hidden">
@@ -124,14 +95,13 @@
     const LINES_PER_PAGE = 20;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "GO", "WIN"];
+    const WORD_POOL = ["COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "PURE", "WIN"];
 
     let currentPage = 0;
     let times = [];
     let correctCounts = [];
     let startTime;
     let pageTimeout;
-    let timerInterval;
 
     const promptEl = document.getElementById("prompt");
     const countEl = document.getElementById("count");
@@ -142,7 +112,6 @@
     const summaryEl = document.getElementById("summary");
     const restEl = document.getElementById("rest");
     const restCountEl = document.getElementById("restCount");
-    const timerBar = document.getElementById("timerBar");
     const topTargetBox = document.getElementById("topTargetBox");
 
     let targetWords = [];
@@ -208,33 +177,16 @@
         });
       });
 
-      startTimerBar(PAGE_DURATION);
       clearTimeout(pageTimeout);
       pageTimeout = setTimeout(() => {
         const time = ((Date.now() - startTime) / 1000).toFixed(2);
         times.push(time);
         correctCounts.push(`${foundWords.size}/${targetWords.length}`);
         currentPage++;
-        stopTimerBar();
         if (currentPage === TOTAL_PAGES) showResult();
         else if (currentPage % 5 === 0) showRest();
         else nextPage();
       }, PAGE_DURATION * 1000);
-    }
-
-    function startTimerBar(duration) {
-      let remaining = duration;
-      timerBar.style.width = "100%";
-      timerInterval = setInterval(() => {
-        remaining--;
-        timerBar.style.width = (remaining / duration * 100) + "%";
-        if (remaining <= 0) clearInterval(timerInterval);
-      }, 1000);
-    }
-
-    function stopTimerBar() {
-      clearInterval(timerInterval);
-      timerBar.style.width = "0%";
     }
 
     function handleClick(span) {
@@ -255,7 +207,6 @@
         correctCounts.push(`${foundWords.size}/${targetWords.length}`);
         currentPage++;
         clearTimeout(pageTimeout);
-        stopTimerBar();
         setTimeout(() => {
           if (currentPage === TOTAL_PAGES) showResult();
           else if (currentPage % 5 === 0) showRest();
@@ -283,7 +234,7 @@
     }
 
     function nextPage() {
-      topTargetBox.classList.add("hidden"); // 隱藏上方提示直到開始
+      topTargetBox.classList.add("hidden");
       promptEl.classList.remove("hidden");
       gameEl.classList.add("hidden");
       foundWords = new Set();
@@ -308,11 +259,87 @@
       gameEl.classList.add("hidden");
       resultEl.classList.remove("hidden");
       topTargetBox.classList.add("hidden");
+
       summaryEl.innerHTML = '<h3>Summary</h3>' + times.map((t, i) => {
         const [correct, total] = correctCounts[i].split("/").map(Number);
         const accuracy = ((correct / total) * 100).toFixed(1);
-        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%)`;
+        const speed = (t / total).toFixed(1);
+        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 搜尋速度：${speed} 秒/字`;
       }).join("<br>");
+
+      const showTableBtn = document.createElement("button");
+      showTableBtn.textContent = "📊 顯示每頁搜尋時間與正確數（表格）";
+      showTableBtn.style.marginTop = "20px";
+      showTableBtn.style.padding = "10px 20px";
+      showTableBtn.style.fontSize = "1em";
+
+      showTableBtn.onclick = () => {
+        if (document.getElementById("resultTable")) return;
+        const table = document.createElement("table");
+        table.id = "resultTable";
+        table.style.marginTop = "20px";
+        table.style.borderCollapse = "collapse";
+        table.style.width = "90%";
+        table.style.maxWidth = "900px";
+        table.style.textAlign = "center";
+        table.style.fontSize = "1.1em";
+        table.style.border = "1px solid #333";
+
+        const headerRow = document.createElement("tr");
+        ["Page", "Search time(S)", "Find the number of words", "Total number of targets", "Accuracy(%)", "Search speed(seconds/word)"].forEach(text => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          th.style.border = "1px solid #333";
+          th.style.padding = "8px";
+          th.style.background = "#dfe6e9";
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        times.forEach((t, i) => {
+          const [correct, total] = correctCounts[i].split("/").map(Number);
+          const accuracy = ((correct / total) * 100).toFixed(1);
+          const speed = (t / total).toFixed(1);
+          const row = document.createElement("tr");
+          [i + 1, t, correct, total, accuracy, speed].forEach(val => {
+            const td = document.createElement("td");
+            td.textContent = val;
+            td.style.border = "1px solid #333";
+            td.style.padding = "6px";
+            row.appendChild(td);
+          });
+          table.appendChild(row);
+        });
+
+        summaryEl.appendChild(table);
+      };
+
+      const downloadBtn = document.createElement("button");
+      downloadBtn.textContent = "📥 Download Summary CSV";
+      downloadBtn.style.marginTop = "10px";
+      downloadBtn.style.padding = "10px 20px";
+      downloadBtn.style.fontSize = "1em";
+
+      downloadBtn.onclick = () => {
+        let csvContent = "Page,Search time(S),Find the number of words,Total number of targets,Accuracy(%),Search speed(seconds/word)\n";
+        times.forEach((t, i) => {
+          const [correct, total] = correctCounts[i].split("/").map(Number);
+          const accuracy = ((correct / total) * 100).toFixed(1);
+          const speed = (t / total).toFixed(1);
+          csvContent += `${i + 1},${t},${correct},${total},${accuracy},${speed}\n`;
+        });
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.setAttribute("href", URL.createObjectURL(blob));
+        link.setAttribute("download", "summary.csv");
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      summaryEl.appendChild(showTableBtn);
+      summaryEl.appendChild(downloadBtn);
     }
 
     nextPage();
