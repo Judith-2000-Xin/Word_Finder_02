@@ -67,6 +67,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="prompt">
     <h2 style="text-align: center">Find these words:</h2>
@@ -90,7 +91,6 @@
 
   <script>
     const TOTAL_PAGES = 30;
-    const TOTAL_WORDS = 80;
     const LINES_PER_PAGE = 25;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
@@ -101,7 +101,6 @@
     let correctCounts = [];
     let startTime;
     let pageTimeout;
-    let pageWordSets = [];
 
     const promptEl = document.getElementById("prompt");
     const countEl = document.getElementById("count");
@@ -125,20 +124,6 @@
       return arr;
     }
 
-    (function initWordSets() {
-      const allWords = shuffle([...WORD_POOL]).slice(0, TOTAL_WORDS);
-      pageWordSets = [];
-      let remaining = TOTAL_WORDS;
-      for (let i = 0; i < TOTAL_PAGES; i++) {
-        const pagesLeft = TOTAL_PAGES - i;
-        const maxWords = Math.min(4, remaining - (pagesLeft - 1));
-        const minWords = Math.max(1, remaining - (pagesLeft - 1) * 4);
-        const numWords = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
-        pageWordSets.push(allWords.splice(0, numWords));
-        remaining -= numWords;
-      }
-    })();
-
     function insertWordIntoLine(lineArr, word) {
       const maxPos = LINE_LENGTH - word.length;
       for (let i = 0; i < 50; i++) {
@@ -156,10 +141,6 @@
     }
 
     function generatePage(words) {
-      if (!words || words.length === 0) {
-        console.error("Missing words on page", currentPage + 1);
-        return;
-      }
       gridEl.innerHTML = "";
       topTargetBox.textContent = "🔍 Find: " + words.join(", ");
       topTargetBox.classList.remove("hidden");
@@ -234,39 +215,19 @@
     }
 
     function showRest() {
-  promptEl.classList.add("hidden");
-  gameEl.classList.add("hidden");
-  restEl.classList.remove("hidden");
-  topTargetBox.classList.add("hidden");
-  let restCount = 15;
-  restCountEl.textContent = restCount;
-  const restTimer = setInterval(() => {
-    restCount--;
-    restCountEl.textContent = restCount;
-    if (restCount <= 0) {
-      clearInterval(restTimer);
-      restEl.classList.add("hidden");
-      foundWords = new Set();
-      targetWords = pageWordSets[currentPage];
-      targetWordsEl.textContent = targetWords.join(", ");
-      promptEl.classList.remove("hidden");
+      promptEl.classList.add("hidden");
       gameEl.classList.add("hidden");
-      let count = 5;
-      countEl.textContent = count;
-      const timer = setInterval(() => {
-        count--;
-        countEl.textContent = count;
-        if (count <= 0) {
-          clearInterval(timer);
-          promptEl.classList.add("hidden");
-          gameEl.classList.remove("hidden");
-          generatePage(targetWords);
-          startTime = Date.now();
-        }
-      }, 1000);
-    }
-  }, 1000);
-}
+      restEl.classList.remove("hidden");
+      topTargetBox.classList.add("hidden");
+      let restCount = 15;
+      restCountEl.textContent = restCount;
+      const restTimer = setInterval(() => {
+        restCount--;
+        restCountEl.textContent = restCount;
+        if (restCount <= 0) {
+          clearInterval(restTimer);
+          restEl.classList.add("hidden");
+          nextPage();
         }
       }, 1000);
     }
@@ -276,7 +237,7 @@
       promptEl.classList.remove("hidden");
       gameEl.classList.add("hidden");
       foundWords = new Set();
-      targetWords = pageWordSets[currentPage];
+      targetWords = shuffle([...new Set(WORD_POOL)]).slice(0, Math.floor(Math.random() * 3) + 1);
       targetWordsEl.textContent = targetWords.join(", ");
       let count = 5;
       countEl.textContent = count;
@@ -298,17 +259,86 @@
       resultEl.classList.remove("hidden");
       topTargetBox.classList.add("hidden");
 
+      summaryEl.innerHTML = '<h3>Summary</h3>' + times.map((t, i) => {
+        const [correct, total] = correctCounts[i].split("/").map(Number);
+        const accuracy = ((correct / total) * 100).toFixed(1);
+        const speed = (t / total).toFixed(1);
+        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 ${speed} seconds/word`;
+      }).join("<br>");
+
+      const showTableBtn = document.createElement("button");
+      showTableBtn.textContent = "📊 Show Table";
+      showTableBtn.onclick = () => {
+        if (document.getElementById("resultTable")) return;
+        const table = document.createElement("table");
+        table.id = "resultTable";
+        const headerRow = document.createElement("tr");
+        ["Page", "Search time(S)", "Correct", "Total", "Accuracy(%)", "Speed(sec/word)"].forEach(text => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+        times.forEach((t, i) => {
+          const [correct, total] = correctCounts[i].split("/").map(Number);
+          const accuracy = ((correct / total) * 100).toFixed(1);
+          const speed = (t / total).toFixed(1);
+          const row = document.createElement("tr");
+          [i + 1, t, correct, total, accuracy, speed].forEach(val => {
+            const td = document.createElement("td");
+            td.textContent = val;
+            row.appendChild(td);
+          });
+          table.appendChild(row);
+        });
+        summaryEl.appendChild(table);
+      };
+      summaryEl.appendChild(showTableBtn);
+
+      const downloadBtn = document.createElement("button");
+      downloadBtn.textContent = "📅 Download CSV";
+      downloadBtn.onclick = () => {
+        let csv = "Page,Time,Correct,Total,Accuracy,Speed\n";
+        times.forEach((t, i) => {
+          const [correct, total] = correctCounts[i].split("/").map(Number);
+          const accuracy = ((correct / total) * 100).toFixed(1);
+          const speed = (t / total).toFixed(1);
+          csv += `${i + 1},${t},${correct},${total},${accuracy},${speed}\n`;
+        });
+        const blob = new Blob([csv], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "summary.csv";
+        link.click();
+      };
+      summaryEl.appendChild(downloadBtn);
+
       const totalCorrect = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[0]), 0);
       const totalTargets = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[1]), 0);
       const totalTime = times.reduce((sum, t) => sum + Number(t), 0);
       const overallAccuracy = ((totalCorrect / totalTargets) * 100).toFixed(1);
 
-      summaryEl.innerHTML = `<h3>Summary</h3>
+      const statsDiv = document.createElement("div");
+      statsDiv.style.marginTop = "20px";
+      statsDiv.style.fontSize = "1.2em";
+      statsDiv.innerHTML = `
         <p>✅ <strong>Total Correct:</strong> ${totalCorrect}</p>
         <p>⏱ <strong>Total Time Spent:</strong> ${totalTime.toFixed(2)} seconds</p>
         <p>📊 <strong>Overall Accuracy:</strong> ${overallAccuracy}%</p>
+      `;
+      summaryEl.appendChild(statsDiv);
+
+      // ➕ 顯示 total words 與平均每頁單字數
+      const totalWordsDiv = document.createElement("div");
+      totalWordsDiv.style.marginTop = "10px";
+      totalWordsDiv.style.fontSize = "1.1em";
+
+      const averageWords = (totalTargets / correctCounts.length).toFixed(1);
+      totalWordsDiv.innerHTML = `
         <p>📘 <strong>Total Words:</strong> ${totalTargets}</p>
-        <p>📄 <strong>Average Words per Page:</strong> ${(totalTargets / correctCounts.length).toFixed(1)}</p>`;
+        <p>📄 <strong>Average Words per Page:</strong> ${averageWords}</p>
+      `;
+      summaryEl.appendChild(totalWordsDiv);
     }
 
     nextPage();
