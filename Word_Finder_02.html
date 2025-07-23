@@ -90,10 +90,10 @@
 
   <script>
     const TOTAL_PAGES = 30;
+    const TOTAL_WORDS = 80;
     const LINES_PER_PAGE = 25;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const TOTAL_WORDS = 80;
     const WORD_POOL = ["DISPLAY", "SUNNY", "SMILE", "MAPLE", "HELLO", "COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "PURE", "WIN"];
 
     let currentPage = 0;
@@ -142,6 +142,10 @@
     }
 
     function generatePage(words) {
+      if (!words || words.length === 0) {
+        console.error("Missing words on page", currentPage + 1);
+        return;
+      }
       gridEl.innerHTML = "";
       topTargetBox.textContent = "🔍 Find: " + words.join(", ");
       topTargetBox.classList.remove("hidden");
@@ -273,29 +277,17 @@
       resultEl.classList.remove("hidden");
       topTargetBox.classList.add("hidden");
 
-      summaryEl.innerHTML = '<h3>Summary</h3>' + times.map((t, i) => {
-        const [correct, total] = correctCounts[i].split("/").map(Number);
-        const accuracy = ((correct / total) * 100).toFixed(1);
-        const speed = (t / total).toFixed(1);
-        return `Page ${i + 1}: ⏱ ${t}s – ✅ ${correct}/${total} (${accuracy}%) – 🔍 ${speed} seconds/word`;
-      }).join("<br>");
-
       const totalCorrect = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[0]), 0);
       const totalTargets = correctCounts.reduce((sum, str) => sum + Number(str.split("/")[1]), 0);
       const totalTime = times.reduce((sum, t) => sum + Number(t), 0);
       const overallAccuracy = ((totalCorrect / totalTargets) * 100).toFixed(1);
 
-      const statsDiv = document.createElement("div");
-      statsDiv.style.marginTop = "20px";
-      statsDiv.style.fontSize = "1.2em";
-      statsDiv.innerHTML = `
+      summaryEl.innerHTML = `<h3>Summary</h3>
         <p>✅ <strong>Total Correct:</strong> ${totalCorrect}</p>
         <p>⏱ <strong>Total Time Spent:</strong> ${totalTime.toFixed(2)} seconds</p>
         <p>📊 <strong>Overall Accuracy:</strong> ${overallAccuracy}%</p>
         <p>📘 <strong>Total Words:</strong> ${totalTargets}</p>
-        <p>📄 <strong>Average Words per Page:</strong> ${(totalTargets / correctCounts.length).toFixed(1)}</p>
-      `;
-      summaryEl.appendChild(statsDiv);
+        <p>📄 <strong>Average Words per Page:</strong> ${(totalTargets / correctCounts.length).toFixed(1)}</p>`;
     }
 
     nextPage();
