@@ -249,6 +249,8 @@
       foundWords = new Set();
       targetWords = pageWordSets[currentPage];
       targetWordsEl.textContent = targetWords.join(", ");
+      promptEl.classList.remove("hidden");
+      gameEl.classList.add("hidden");
       let count = 5;
       countEl.textContent = count;
       const timer = setInterval(() => {
