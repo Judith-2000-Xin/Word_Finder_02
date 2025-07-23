@@ -209,7 +209,7 @@
         clearTimeout(pageTimeout);
         setTimeout(() => {
           if (currentPage === TOTAL_PAGES) showResult();
-          else if (currentPage % 5 === 0) showRest();
+          else if (currentPage % 10 === 0) showRest();
           else nextPage();
         }, 800);
       }
