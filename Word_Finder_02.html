@@ -48,13 +48,13 @@
       user-select: none;
     }
     .word-span {
-      font-size: clamp(14px, 2vw, 28px);
+      font-size: clamp(16px, 2vw, 28px);
       width: 100%;
       text-align: center;
       display: inline-block;
       cursor: pointer;
       line-height: 1.8;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
     .word-span:hover { background-color: #dfe6e9; }
     .correct { background-color: #55efc4; }
@@ -94,7 +94,7 @@
     const LINES_PER_PAGE = 25;
     const LINE_LENGTH = 50;
     const PAGE_DURATION = 60;
-    const WORD_POOL = ["VIDEO", "GAME", "CYAN", "MAGENTA", "DISPLAY", "SUNNY", "SMILE", "MAPLE", "HELLO", "COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "PURE", "WIN"];
+    const WORD_POOL = ["COMPUTER", "CRAB", "VIDEO", "GAME", "CYAN", "MAGENTA", "DISPLAY", "SUNNY", "SMILE", "MAPLE", "HELLO", "COLOR", "SWAG", "ORANGE", "YELLOW", "GREEN", "PURPLE", "COOL", "COAT", "MOON", "DATA", "CODE", "MAP", "RED", "BLUE", "SUN", "DOOR", "SKY", "TOP", "TASK", "TREE", "FIRE", "JUMP", "YES", "PURE", "WIN"];
 
     let currentPage = 0;
     let times = [];
